@@ -6,6 +6,7 @@ const progressBar = player.querySelector(".progress__filled");
 const toggle = player.querySelector(".toggle");
 const skipButtons = player.querySelectorAll("[data-skip]");
 const ranges = player.querySelectorAll(".player__slider");
+const fullscreen = player.querySelector(".fullscreen");
 
 // Build Functions
 function togglePlay() {
@@ -43,6 +44,40 @@ function scrub(e) {
   console.log(e);
 }
 
+let isFullscreen = false;
+
+/* View in fullscreen */
+function openFullscreen() {
+  if (player.requestFullscreen) {
+    player.requestFullscreen();
+  } else if (player.mozRequestFullScreen) {
+    /* Firefox */
+    player.mozRequestFullScreen();
+  } else if (player.webkitRequestFullscreen) {
+    /* Chrome, Safari and Opera */
+    player.webkitRequestFullscreen();
+  } else if (player.msRequestFullscreen) {
+    /* IE/Edge */
+    player.msRequestFullscreen();
+  }
+}
+
+/* Close fullscreen */
+function closeFullscreen() {
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if (document.mozCancelFullScreen) {
+    /* Firefox */
+    document.mozCancelFullScreen();
+  } else if (document.webkitExitFullscreen) {
+    /* Chrome, Safari and Opera */
+    document.webkitExitFullscreen();
+  } else if (document.msExitFullscreen) {
+    /* IE/Edge */
+    document.msExitFullscreen();
+  }
+}
+
 // Hook up the Event listeners
 video.addEventListener("click", togglePlay);
 video.addEventListener("play", updateButton);
@@ -57,9 +92,13 @@ ranges.forEach((range) => range.addEventListener("change", handleRangeUpdate));
 ranges.forEach((range) =>
   range.addEventListener("mousemove", handleRangeUpdate)
 );
-
 let mouseDown = false;
 progress.addEventListener("click", scrub);
 progress.addEventListener("mousemove", (e) => mouseDown && scrub(e));
 progress.addEventListener("mousedown", () => (mouseDown = true));
 progress.addEventListener("mouseup", () => (mouseDown = false));
+
+fullscreen.addEventListener("click", () => {
+  isFullscreen = !isFullscreen;
+  isFullscreen ? openFullscreen() : closeFullscreen();
+});
